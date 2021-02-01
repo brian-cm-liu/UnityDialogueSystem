@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class DialogueManager : MonoBehaviour
 {
+    // type next speaker:text
+    // choice next,next,next speaker:text
+    // paramter name,value speaker:text
+    // flag name speaker:text
+    // opinion name,value speaker:text,text
     private bool inConvo;
     public TextAsset dialogueFile;
     private string[] linesRaw;
