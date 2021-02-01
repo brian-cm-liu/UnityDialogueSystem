@@ -1,0 +1,4 @@
+C 2,3,4 Brian:Make your choice, it could either be %n1. choice 1%n2. choice 2%n3. choice 3
+T -2 Brian:You chose choice 1!
+T -2 Brian:You chose choice 2!
+T -2 Brian:You chose choice 3!

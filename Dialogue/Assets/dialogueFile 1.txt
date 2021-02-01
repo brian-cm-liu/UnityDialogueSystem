@@ -1,0 +1,7 @@
+T 2 Ash:What's up you loser?
+T 3 Ash:Looks like this is all working ok
+T 4 Ash:Haven't implemented ending the dialogue yet
+T 7 Ash:Jumping around
+T 6 Ash:at the speed of sound
+T -2 Ash:looks like it's all working
+T 5 Ash:Sonic go brrrr

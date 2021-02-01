@@ -7,7 +7,7 @@ public class DialogueManager : MonoBehaviour
     private bool inConvo;
     public TextAsset dialogueFile;
     private string[] linesRaw;
-    private ArrayList lines = new ArrayList();
+    private List<Line> lines = new List<Line>();
     private Line currentLine;
 
     // Start is called before the first frame update
@@ -20,13 +20,28 @@ public class DialogueManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            NextDialogue(0);
+        }
+        else if (Input.GetKeyDown(KeyCode.W))
+        {
+            NextDialogue(1);
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            NextDialogue(2);
+        }
+        else if (Input.GetKeyDown(KeyCode.R))
+        {
+            NextDialogue(3);
+        }
     }
 
     void BeginDialogue()
     {
         linesRaw = dialogueFile.text.Split('\n');
-        print(linesRaw[0]);
+        //print(linesRaw[0]);
         foreach (string line in linesRaw)
         {
             string[] textSplit = line.Split(':');
@@ -34,7 +49,7 @@ public class DialogueManager : MonoBehaviour
             string[] parameterSplit = textSplit[0].Split(' ');
             if (parameterSplit[0].Equals("T"))
             {
-                int[] nextLine = new int[] { int.Parse(parameterSplit[1]) };
+                int[] nextLine = new int[] { int.Parse(parameterSplit[1]) - 1};
                 string speaker = parameterSplit[2];
                 Line newLine = new Line(nextLine, speaker, text);
                 lines.Add(newLine);
@@ -46,7 +61,7 @@ public class DialogueManager : MonoBehaviour
                 int[] nextLine = new int[nextLineStrings.Length];
                 for (int i = 0; i < nextLineStrings.Length; i++)
                 {
-                    nextLine[i] = int.Parse(nextLineStrings[i]);
+                    nextLine[i] = int.Parse(nextLineStrings[i]) - 1;
                 }
                 string speaker = parameterSplit[2];
                 LineChoice newLine = new LineChoice(nextLine, speaker, text);
@@ -58,20 +73,32 @@ public class DialogueManager : MonoBehaviour
                 return;
             }
         }
+        currentLine = lines[0];
+        print(currentLine.getLine());
     }
 
-    void NextDialogue()
+    void NextDialogue(int choice)
     {
-        print(currentLine.getLine());
         if (currentLine.GetType() == typeof(LineChoice))
         {
             //line choice
+            //print("line choice");
             LineChoice lineChoice = (LineChoice)currentLine;
+            currentLine = lines[lineChoice.getNextLine(choice)];
+            print(currentLine.getLine());
 
         }
         else
         {
-
+            if(currentLine.getNextLine() == -2)
+            {
+                EndDialogue();
+            }
+            else
+            {
+                currentLine = lines[currentLine.getNextLine()];
+                print(currentLine.getLine());
+            }
         }
     }
 
