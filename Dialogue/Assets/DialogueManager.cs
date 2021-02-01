@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -15,9 +16,18 @@ public class DialogueManager : MonoBehaviour
     private List<Line> lines = new List<Line>();
     private Line currentLine;
 
+    public float textSpeed = 0.1f;
+
+    //public AudioClip dialogueSound;
+    public AudioSource dialogueSound;
+
+    public Image textboxImage;
+    public Text textboxText;
+
     // Start is called before the first frame update
     void Start()
     {
+        dialogueSound = GetComponent<AudioSource>();
         inConvo = false;
         BeginDialogue();
     }
@@ -79,7 +89,7 @@ public class DialogueManager : MonoBehaviour
             }
         }
         currentLine = lines[0];
-        print(currentLine.getLine());
+        StartCoroutine(DisplayText(currentLine.getLine()));
     }
 
     void NextDialogue(int choice)
@@ -90,7 +100,7 @@ public class DialogueManager : MonoBehaviour
             //print("line choice");
             LineChoice lineChoice = (LineChoice)currentLine;
             currentLine = lines[lineChoice.getNextLine(choice)];
-            print(currentLine.getLine());
+            StartCoroutine(DisplayText(currentLine.getLine()));
 
         }
         else
@@ -102,7 +112,7 @@ public class DialogueManager : MonoBehaviour
             else
             {
                 currentLine = lines[currentLine.getNextLine()];
-                print(currentLine.getLine());
+                StartCoroutine(DisplayText(currentLine.getLine()));
             }
         }
     }
@@ -132,7 +142,7 @@ public class DialogueManager : MonoBehaviour
 
         public string getLine()
         {
-            return speaker + ": " + text + "\n";
+            return speaker + "\n" + text + "\n";
         }
     }
 
@@ -152,6 +162,20 @@ public class DialogueManager : MonoBehaviour
                 print("Invalid choice index");
                 return -1;
             }
+        }
+    }
+    IEnumerator DisplayText(string text)
+    {
+        int charIndex = 0;
+        while (charIndex < text.Length)
+        {
+            textboxText.text = text.Substring(0, charIndex);
+            if (!text[charIndex].Equals(' '))
+            {
+                dialogueSound.Play(0);
+            }
+            charIndex++;
+            yield return new WaitForSeconds(textSpeed);
         }
     }
 }
