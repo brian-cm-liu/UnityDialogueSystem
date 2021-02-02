@@ -18,13 +18,11 @@ public class DialogueManager : MonoBehaviour
 
     public float textSpeed = 0.1f;
 
-    //public AudioClip dialogueSound;
     public AudioSource dialogueSound;
 
     public Image textboxImage;
     public Text textboxText;
 
-    // Start is called before the first frame update
     void Start()
     {
         dialogueSound = GetComponent<AudioSource>();
@@ -32,7 +30,6 @@ public class DialogueManager : MonoBehaviour
         BeginDialogue();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
@@ -96,12 +93,9 @@ public class DialogueManager : MonoBehaviour
     {
         if (currentLine.GetType() == typeof(LineChoice))
         {
-            //line choice
-            //print("line choice");
             LineChoice lineChoice = (LineChoice)currentLine;
             currentLine = lines[lineChoice.getNextLine(choice)];
             StartCoroutine(DisplayText(currentLine.getLine()));
-
         }
         else
         {
