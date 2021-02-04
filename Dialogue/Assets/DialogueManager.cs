@@ -11,23 +11,26 @@ public class DialogueManager : MonoBehaviour
     // flag name speaker:text
     // opinion name,value speaker:text,text
     private bool inConvo;
-    public TextAsset dialogueFile;
+    //public TextAsset dialogueFile;
     private string[] linesRaw;
     private List<Line> lines = new List<Line>();
     private Line currentLine;
 
     public float textSpeed = 0.1f;
 
-    public AudioSource dialogueSound;
+    private AudioSource dialogueSound;
 
     public Image textboxImage;
+    public Text textboxSpeaker;
     public Text textboxText;
 
     void Start()
     {
         dialogueSound = GetComponent<AudioSource>();
         inConvo = false;
-        BeginDialogue();
+        textboxImage.enabled = false;
+        textboxSpeaker.enabled = false;
+        textboxSpeaker.enabled = false;
     }
 
     void Update()
@@ -50,8 +53,12 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    void BeginDialogue()
+    void BeginDialogue(TextAsset dialogueFile)
     {
+        inConvo = true;
+        textboxImage.enabled = true;
+        textboxSpeaker.enabled = true;
+        textboxText.enabled = true;
         linesRaw = dialogueFile.text.Split('\n');
         //print(linesRaw[0]);
         foreach (string line in linesRaw)
@@ -86,7 +93,7 @@ public class DialogueManager : MonoBehaviour
             }
         }
         currentLine = lines[0];
-        StartCoroutine(DisplayText(currentLine.getLine()));
+        StartCoroutine(DisplayText(currentLine.getSpeaker(),currentLine.getText()));
     }
 
     void NextDialogue(int choice)
@@ -95,7 +102,7 @@ public class DialogueManager : MonoBehaviour
         {
             LineChoice lineChoice = (LineChoice)currentLine;
             currentLine = lines[lineChoice.getNextLine(choice)];
-            StartCoroutine(DisplayText(currentLine.getLine()));
+            StartCoroutine(DisplayText(currentLine.getSpeaker(),currentLine.getText()));
         }
         else
         {
@@ -106,14 +113,20 @@ public class DialogueManager : MonoBehaviour
             else
             {
                 currentLine = lines[currentLine.getNextLine()];
-                StartCoroutine(DisplayText(currentLine.getLine()));
+                StartCoroutine(DisplayText(currentLine.getSpeaker(),currentLine.getText()));
             }
         }
     }
 
     void EndDialogue()
     {
-
+        lines.Clear();
+        linesRaw = new string[0];
+        currentLine = null;
+        inConvo = false;
+        textboxImage.enabled = false;
+        textboxSpeaker.enabled = false;
+        textboxText.enabled = false;
     }
 
     public class Line
@@ -134,9 +147,13 @@ public class DialogueManager : MonoBehaviour
             return nextLine[0];
         }
 
-        public string getLine()
+        public string getText()
         {
-            return speaker + "\n" + text + "\n";
+            return text;
+        }
+        public string getSpeaker()
+        {
+            return speaker;
         }
     }
 
@@ -158,8 +175,9 @@ public class DialogueManager : MonoBehaviour
             }
         }
     }
-    IEnumerator DisplayText(string text)
+    IEnumerator DisplayText(string speaker, string text)
     {
+        textboxSpeaker.text = speaker;
         int charIndex = 0;
         while (charIndex < text.Length)
         {
